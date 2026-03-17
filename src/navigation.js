@@ -22,3 +22,19 @@ export async function navigateTo(currentDir, targetPath) {
     return currentDir;
   }
 }
+
+export async function listDirectory(currentDir) {
+  const entries = await fs.readdir(currentDir, { withFileTypes: true });
+  const folders = entries.filter((e) => e.isDirectory());
+  const files = entries.filter((e) => e.isFile());
+
+  folders.sort((a, b) => a.name.localeCompare(b.name));
+  files.sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const folder of folders) {
+    console.log(`${folder.name}\t[folder]`);
+  }
+  for (const file of files) {
+    console.log(`${file.name}\t[file]`);
+  }
+}
