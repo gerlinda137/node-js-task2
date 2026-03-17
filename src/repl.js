@@ -1,4 +1,4 @@
-import { navigateUp, navigateTo } from "./navigation.js";
+import { navigateUp, navigateTo, listDirectory } from "./navigation.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -14,6 +14,11 @@ export async function handleCommand(input, currentDir) {
       return null;
     }
     return await navigateTo(currentDir, parts[1]);
+  }
+
+  if (command === "ls") {
+    await listDirectory(currentDir);
+    return currentDir;
   }
 
   console.log("Invalid input");
