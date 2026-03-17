@@ -1,8 +1,12 @@
 import { navigateUp, navigateTo, listDirectory } from "./navigation.js";
+import { parseArgs } from "./utils/argParser.js";
+import { countFile } from "./commands/count.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
   const command = parts[0];
+
+  const args = parts.slice(1);
 
   if (command === "up") {
     return navigateUp(currentDir);
@@ -18,6 +22,16 @@ export async function handleCommand(input, currentDir) {
 
   if (command === "ls") {
     await listDirectory(currentDir);
+    return currentDir;
+  }
+
+  if (command === "count") {
+    const flags = parseArgs(args);
+    if (!flags["--input"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await countFile(flags["--input"], currentDir);
     return currentDir;
   }
 
