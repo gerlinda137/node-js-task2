@@ -17,7 +17,7 @@ export async function handleCommand(input, currentDir) {
       console.log("Invalid input");
       return null;
     }
-    return await navigateTo(currentDir, parts[1]);
+    return await navigateTo(currentDir, parts.slice(1).join(" "));
   }
 
   if (command === "ls") {
