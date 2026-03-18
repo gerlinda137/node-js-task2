@@ -1,6 +1,7 @@
 import { navigateUp, navigateTo, listDirectory } from "./navigation.js";
 import { parseArgs } from "./utils/argParser.js";
 import { countFile } from "./commands/count.js";
+import { csvToJson } from "./commands/csvToJson.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -32,6 +33,16 @@ export async function handleCommand(input, currentDir) {
       return null;
     }
     await countFile(flags["--input"], currentDir);
+    return currentDir;
+  }
+
+  if (command === "csv-to-json") {
+    const flags = parseArgs(args);
+    if (!flags["--input"] || !flags["--output"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await csvToJson(flags["--input"], flags["--output"], currentDir);
     return currentDir;
   }
 
