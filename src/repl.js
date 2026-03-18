@@ -2,6 +2,7 @@ import { navigateUp, navigateTo, listDirectory } from "./navigation.js";
 import { parseArgs } from "./utils/argParser.js";
 import { countFile } from "./commands/count.js";
 import { csvToJson } from "./commands/csvToJson.js";
+import { jsonToCsv } from "./commands/jsonToCsv.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -43,6 +44,18 @@ export async function handleCommand(input, currentDir) {
       return null;
     }
     await csvToJson(flags["--input"], flags["--output"], currentDir);
+    console.log("File created successfully");
+    return currentDir;
+  }
+
+  if (command === "json-to-csv") {
+    const flags = parseArgs(args);
+    if (!flags["--input"] || !flags["--output"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await jsonToCsv(flags["--input"], flags["--output"], currentDir);
+    console.log("File created successfully");
     return currentDir;
   }
 
