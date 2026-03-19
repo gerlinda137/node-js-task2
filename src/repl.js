@@ -3,6 +3,7 @@ import { parseArgs } from "./utils/argParser.js";
 import { countFile } from "./commands/count.js";
 import { csvToJson } from "./commands/csvToJson.js";
 import { jsonToCsv } from "./commands/jsonToCsv.js";
+import { hashFile } from "./commands/hash.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -56,6 +57,21 @@ export async function handleCommand(input, currentDir) {
     }
     await jsonToCsv(flags["--input"], flags["--output"], currentDir);
     console.log("File created successfully");
+    return currentDir;
+  }
+
+  if (command === "hash") {
+    const flags = parseArgs(args);
+    if (!flags["--input"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await hashFile(
+      flags["--input"],
+      flags["--algorithm"] || "sha256",
+      flags["--save"] === true,
+      currentDir,
+    );
     return currentDir;
   }
 
