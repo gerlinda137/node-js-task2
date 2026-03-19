@@ -7,6 +7,21 @@ import { pipeline } from "node:stream/promises";
 
 const SUPPORTED = ["sha256", "md5", "sha512"];
 
+export async function computeHash(inputPath, algorithm) {
+  const hash = crypto.createHash(algorithm);
+
+  const hashWriter = new Writable({
+    write(chunk, encoding, callback) {
+      hash.update(chunk);
+      callback();
+    },
+  });
+
+  await pipeline(fs.createReadStream(inputPath), hashWriter);
+
+  return hash.digest("hex");
+}
+
 export async function hashFile(
   inputPath,
   algorithm = "sha256",
@@ -20,19 +35,8 @@ export async function hashFile(
     return;
   }
 
-  const hash = crypto.createHash(algorithm);
-
-  const hashWriter = new Writable({
-    write(chunk, encoding, callback) {
-      hash.update(chunk);
-      callback();
-    },
-  });
-
   try {
-    await pipeline(fs.createReadStream(resolved), hashWriter);
-
-    const result = hash.digest("hex");
+    const result = await computeHash(resolved, algorithm);
     console.log(`${algorithm}: ${result}`);
 
     if (save) {
