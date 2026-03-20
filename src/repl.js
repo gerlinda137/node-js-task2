@@ -7,6 +7,7 @@ import { hashFile } from "./commands/hash.js";
 import { hashCompare } from "./commands/hashCompare.js";
 import { encryptFile } from "./commands/encrypt.js";
 import { decryptFile } from "./commands/decrypt.js";
+import { logStats } from "./commands/logStats.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -120,6 +121,16 @@ export async function handleCommand(input, currentDir) {
       flags["--password"],
       currentDir,
     );
+    return currentDir;
+  }
+
+  if (command === "log-stats") {
+    const flags = parseArgs(args);
+    if (!flags["--input"] || !flags["--output"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await logStats(flags["--input"], flags["--output"], currentDir);
     return currentDir;
   }
 
