@@ -5,6 +5,7 @@ import { csvToJson } from "./commands/csvToJson.js";
 import { jsonToCsv } from "./commands/jsonToCsv.js";
 import { hashFile } from "./commands/hash.js";
 import { hashCompare } from "./commands/hashCompare.js";
+import { encryptFile } from "./commands/encrypt.js";
 
 export async function handleCommand(input, currentDir) {
   const parts = input.trim().split(/\s+/);
@@ -86,6 +87,21 @@ export async function handleCommand(input, currentDir) {
       flags["--input"],
       flags["--hash"],
       flags["--algorithm"] || "sha256",
+      currentDir,
+    );
+    return currentDir;
+  }
+
+  if (command === "encrypt") {
+    const flags = parseArgs(args);
+    if (!flags["--input"] || !flags["--output"] || !flags["--password"]) {
+      console.log("Invalid input");
+      return null;
+    }
+    await encryptFile(
+      flags["--input"],
+      flags["--output"],
+      flags["--password"],
       currentDir,
     );
     return currentDir;
